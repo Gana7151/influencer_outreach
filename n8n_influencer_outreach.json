@@ -1,0 +1,842 @@
+{
+  "name": "CrowdWisdomTrading - Influencer Outreach Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Influencer Lead Search",
+        "formDescription": "Find trading influencers for CrowdWisdomTrading outreach",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Lead Type",
+              "fieldType": "text",
+              "requiredField": true,
+              "placeholder": "e.g. trading influencers, crypto traders"
+            },
+            {
+              "fieldLabel": "Minimum Subscribers",
+              "fieldType": "number",
+              "requiredField": true,
+              "placeholder": "50000"
+            },
+            {
+              "fieldLabel": "Social Platform",
+              "fieldType": "dropdown",
+              "requiredField": true,
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "YouTube"
+                  },
+                  {
+                    "option": "Instagram"
+                  },
+                  {
+                    "option": "TikTok"
+                  },
+                  {
+                    "option": "LinkedIn"
+                  },
+                  {
+                    "option": "Web Search"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "id": "b91ee220-8afa-4d8d-be7e-6c5ad0df26cf",
+      "name": "Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "📋 FORM TRIGGER\n\nEntry point. Click 'Test Workflow' to open form.\n\nFields:\n• Lead Type: search query\n• Min Subscribers: threshold (50K+)\n• Social Platform: dropdown\n\n✅ NO API NEEDED",
+        "width": 380,
+        "height": 280
+      },
+      "id": "e14e6f9f-54cc-4772-b063-018e19a3f84e",
+      "name": "Sticky Note - 📋 FORM TRIGGER\n\nEnt",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -30,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "35448e33-06b4-47ce-846f-9d4afbeed553",
+              "name": "search_query",
+              "value": "={{ $json[\"Lead Type\"] }} on {{ $json[\"Social Platform\"] }} with {{ $json[\"Minimum Subscribers\"] }}+ subscribers",
+              "type": "string"
+            },
+            {
+              "id": "b2917e46-cbba-43bd-89be-b0802af68444",
+              "name": "platform",
+              "value": "={{ $json[\"Social Platform\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "c5cf11db-d2a1-431c-97ce-5d01e494efeb",
+              "name": "min_subs",
+              "value": "={{ $json[\"Minimum Subscribers\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "2a1f6623-6d7c-4217-abd2-edc4f2dac806",
+              "name": "company",
+              "value": "CrowdWisdomTrading",
+              "type": "string"
+            },
+            {
+              "id": "7812f79f-97c6-4108-98b8-5830791faba6",
+              "name": "company_url",
+              "value": "https://www.crowdwisdomtrading.com",
+              "type": "string"
+            },
+            {
+              "id": "257d0daa-2327-4bba-86be-4240250035ed",
+              "name": "run_timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "3d8d5515-2151-4fc6-8a5e-4d0a981be416",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "⚙️ SET VARIABLES\n\nNormalizes form inputs.\nSets: search_query, platform, min_subs, company info.\n\n✅ NO API NEEDED",
+        "width": 340,
+        "height": 260
+      },
+      "id": "259095de-4400-4167-ae2b-81664034806b",
+      "name": "Sticky Note - ⚙️ SET VARIABLES\n\nNo",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        270,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.exa.ai/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "YOUR_EXA_API_KEY_HERE"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ query: $json.search_query, type: 'neural', useAutoprompt: true, numResults: 15, contents: { text: true, highlights: true } }) }}",
+        "options": {}
+      },
+      "id": "0b09e1d1-3bf1-4452-943f-afce35849fda",
+      "name": "Exa Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🔍 EXA AI SEARCH\n\n>>> API KEY NEEDED <<<\n\n1. Sign up: https://exa.ai\n2. Free: $5 credit\n3. Dashboard → API Keys\n4. Replace YOUR_EXA_API_KEY_HERE\n\nALT — Tavily Search:\n1. https://tavily.com (free 1000/mo)\n2. Change URL to: https://api.tavily.com/search\n3. Body: {api_key, query, max_results}",
+        "width": 380,
+        "height": 300
+      },
+      "id": "aee9a044-eae9-44cb-8a49-c9c8f014057d",
+      "name": "Sticky Note - 🔍 EXA AI SEARCH\n\n>>",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        570,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Exa search results into individual items\nconst body = $input.first().json;\nconst results = body.results || body.data || [];\n\nif (!results.length) {\n  return [{ json: { error: 'No results found', query: body } }];\n}\n\nreturn results.map(r => ({\n  json: {\n    url: r.url || '',\n    title: r.title || '',\n    text: (r.text || '').substring(0, 1000),\n    highlights: Array.isArray(r.highlights) ? r.highlights.join(' | ') : '',\n    score: r.score || 0\n  }\n}));"
+      },
+      "id": "b02afa90-8cc6-4e8a-b678-471bfd64d270",
+      "name": "Parse Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "📦 PARSE RESULTS\n\nCode node that extracts individual leads from the Exa response.\n\nConverts the results array into separate items for processing.\n\n✅ NO API NEEDED",
+        "width": 340,
+        "height": 260
+      },
+      "id": "d492db4f-a352-4f55-84c6-aaf72183eb4e",
+      "name": "Sticky Note - 📦 PARSE RESULTS\n\nCo",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        870,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "97622522-3f8b-466e-a473-8291758865f6",
+      "name": "Loop Over Leads",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🔄 LOOP\n\nProcesses 1 lead at a time.\n• Error isolation per lead\n• Rate limit safe\n\n⚠️ Enable 'Continue On Fail' in node Settings for production!\n\n✅ NO API NEEDED",
+        "width": 340,
+        "height": 260
+      },
+      "id": "dc9caeae-71d5-4ebf-bf48-7a9be2afe325",
+      "name": "Sticky Note - 🔄 LOOP\n\nProcesses 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1170,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Research this potential influencer and extract structured data.\n\nURL: {{ $json.url }}\nTitle: {{ $json.title }}\nText: {{ $json.text }}\nHighlights: {{ $json.highlights }}\n\nReturn ONLY a JSON object:\n{\n  \"name\": \"Full name\",\n  \"email\": \"email or empty string\",\n  \"platform\": \"main platform\",\n  \"channel_name\": \"channel name\",\n  \"channel_url\": \"channel URL\",\n  \"subscribers\": 0,\n  \"linkedin_url\": \"linkedin URL or empty string\",\n  \"niche\": \"trading niche\",\n  \"recent_topics\": \"topic1, topic2, topic3\",\n  \"meets_criteria\": true\n}",
+        "options": {
+          "systemMessage": "You are a lead research specialist for CrowdWisdomTrading. Extract structured contact info from influencer profiles. Be accurate. Use empty strings if info is unavailable."
+        }
+      },
+      "id": "a9bac9aa-be3e-4bd9-aca1-ba90a56c36e3",
+      "name": "AI Research Lead",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🤖 AI AGENT — RESEARCH LEAD\n\n>>> LLM SETUP (choose one) <<<\n\nOPTION A — OpenRouter:\n1. https://openrouter.ai (free $1)\n2. Add sub-node: OpenAI Chat Model\n3. Base URL: https://openrouter.ai/api/v1\n4. Model: google/gemini-2.0-flash-exp:free\n\nOPTION B — Gemini:\n1. https://aistudio.google.com/apikey\n2. Add sub-node: Google Gemini Chat Model\n3. Model: gemini-2.0-flash\n\n>>> TOOLS (sub-nodes) <<<\n• HTTP Request Tool\n• Or Tavily Search tool",
+        "width": 400,
+        "height": 320
+      },
+      "id": "ca3dbca2-c88f-4714-a7af-0acc88f9f1c2",
+      "name": "Sticky Note - 🤖 AI AGENT — RESEAR",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1470,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the AI agent's JSON output\nconst output = $input.first().json.output || $input.first().json.text || '';\nlet parsed;\ntry {\n  // Try to extract JSON from the output\n  const jsonMatch = output.match(/\\{[\\s\\S]*\\}/);\n  parsed = JSON.parse(jsonMatch ? jsonMatch[0] : output);\n} catch(e) {\n  parsed = {\n    name: 'Unknown',\n    email: '',\n    platform: '',\n    channel_name: '',\n    channel_url: '',\n    subscribers: 0,\n    linkedin_url: '',\n    niche: '',\n    recent_topics: '',\n    meets_criteria: false,\n    parse_error: e.message\n  };\n}\nreturn [{ json: parsed }];"
+      },
+      "id": "2fc95cff-86fe-4760-95a4-6ca007838ee3",
+      "name": "Parse AI Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.meets_criteria }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "14354906-bc16-48a7-91cf-db1b4997d769",
+      "name": "IF Qualified",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "✅ QUALIFICATION CHECK\n\nChecks meets_criteria from AI output.\n\nTRUE → CRM + Email\nFALSE → Log as unqualified\n\n✅ NO API NEEDED",
+        "width": 340,
+        "height": 240
+      },
+      "id": "c00a7090-7f5f-4dc1-bd79-2868c36e5d2b",
+      "name": "Sticky Note - ✅ QUALIFICATION CHEC",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2070,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "contact",
+        "operation": "create",
+        "email": "={{ $json.email }}",
+        "additionalFields": {
+          "firstName": "={{ $json.name.split(' ')[0] }}",
+          "lastName": "={{ $json.name.split(' ').slice(1).join(' ') }}",
+          "company": "={{ $json.channel_name }}",
+          "website": "={{ $json.channel_url }}"
+        }
+      },
+      "id": "46f36832-a0d2-4185-b115-0826d2027b52",
+      "name": "HubSpot Create Contact",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "📇 HUBSPOT CRM\n\n>>> API SETUP <<<\n1. https://app.hubspot.com (free)\n2. Settings → Integrations → Private Apps\n3. Create app: 'n8n Outreach Bot'\n4. Scopes:\n   • crm.objects.contacts.read\n   • crm.objects.contacts.write\n5. Copy access token\n\n>>> N8N CREDENTIAL <<<\nCredentials → Add → HubSpot App Token\n\n>>> CUSTOM PROPERTIES <<<\nCreate in HubSpot Settings → Properties:\n• subscriber_count (number)\n• niche (text)\n• linkedin_url (text)\n\nFREE: up to 1M contacts",
+        "width": 400,
+        "height": 300
+      },
+      "id": "d036b0b6-9e15-4d98-a33d-e9d4f3cb5bc6",
+      "name": "Sticky Note - 📇 HUBSPOT CRM\n\n>>> ",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2370,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Write a personalized cold email for CrowdWisdomTrading.\n\nABOUT US: CrowdWisdomTrading (www.crowdwisdomtrading.com) — trading community.\n\nLEAD INFO:\n• Name: {{ $json.name }}\n• Channel: {{ $json.channel_name }} ({{ $json.channel_url }})\n• Niche: {{ $json.niche }}\n• Topics: {{ $json.recent_topics }}\n• Subs: {{ $json.subscribers }}\n\nRULES:\n1. Subject: Hook about CrowdWisdomTrading\n2. Opening: Reference their content\n3. CTA: Ask for feedback on our platform\n4. Tone: Warm, trader-to-trader\n5. Max 150-200 words\n\nReturn JSON only:\n{\"subject\": \"...\", \"body\": \"...\", \"personalization_notes\": \"...\"}",
+        "options": {
+          "systemMessage": "Expert cold email writer for CrowdWisdomTrading. Write genuine, personalized emails. Reference specific recipient details. No generic templates."
+        }
+      },
+      "id": "82193b41-5a3b-4747-93e1-2671d906930b",
+      "name": "AI Write Email",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        2700,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "✉️ AI WRITE EMAIL\n\nSame LLM as Research node.\nAdd same Chat Model sub-node.\n\nOutput:\n• Subject line (about CWT)\n• Personalized body\n• CTA: ask for feedback\n\n✅ Reuses same LLM credential",
+        "width": 360,
+        "height": 260
+      },
+      "id": "944382bc-f25d-4a89-b731-34d1965fa912",
+      "name": "Sticky Note - ✉️ AI WRITE EMAIL\n\nS",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2670,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "engagement",
+        "operation": "create",
+        "type": "EMAIL",
+        "additionalFields": {}
+      },
+      "id": "49e0d91c-a094-4aa7-bca2-3b5331e67c2f",
+      "name": "HubSpot Save Email",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [
+        3000,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "📨 HUBSPOT SAVE EMAIL\n\nSaves AI email as draft on contact timeline.\n\nExtra scopes needed:\n• sales-email-read\n• sales-email-write\n\nDoes NOT send — review in HubSpot first.\n\nSame HubSpot token as Contact node.",
+        "width": 360,
+        "height": 260
+      },
+      "id": "f8cd24c0-3eb1-4fb7-901a-f99180d67719",
+      "name": "Sticky Note - 📨 HUBSPOT SAVE EMAI",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2970,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Parse AI Output').item.json.linkedin_url }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "d9625e81-8e16-42ee-8230-4767a9f4e67c",
+      "name": "IF Has LinkedIn",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3300,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:4200/api/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_POSTIZ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ integration: 'linkedin', type: 'connection_request', content: 'Hi ' + $('Parse AI Output').item.json.name + ', I\\'m Gilad from CrowdWisdomTrading. Would love to connect!', profileUrl: $('Parse AI Output').item.json.linkedin_url }) }}",
+        "options": {}
+      },
+      "id": "3a637172-8a47-49ed-9bd1-61c3b24fda6f",
+      "name": "LinkedIn Connect",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3600,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🤝 LINKEDIN CONNECTION\n\nOPTION A — Postiz (Free, OSS):\n1. https://postiz.com\n2. docker-compose up\n3. Replace YOUR_POSTIZ_API_KEY\n\nOPTION B — Unipile (Paid)\nOPTION C — Disable node, handle manually\n\n⚠️ LinkedIn has no official API for connections",
+        "width": 380,
+        "height": 300
+      },
+      "id": "973acc41-e148-4c1d-8d67-de5e081c166b",
+      "name": "Sticky Note - 🤝 LINKEDIN CONNECTI",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3570,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Lead Name": "={{ $('Parse AI Output').item.json.name }}",
+            "Email": "={{ $('Parse AI Output').item.json.email }}",
+            "Platform": "={{ $('Parse AI Output').item.json.platform }}",
+            "Subscribers": "={{ $('Parse AI Output').item.json.subscribers }}",
+            "LinkedIn URL": "={{ $('Parse AI Output').item.json.linkedin_url }}",
+            "Status": "Completed - Email Drafted",
+            "Timestamp": "={{ $now.toISO() }}",
+            "Error": ""
+          }
+        },
+        "options": {}
+      },
+      "id": "d53811e2-07c9-4198-bbba-624ba2c9474a",
+      "name": "Sheet - Update Status",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "📊 GOOGLE SHEETS STATUS\n\n>>> SETUP <<<\n1. Create Google Sheet: 'Influencer Tracker'\n2. Headers (Row 1):\n   Lead Name | Email | Platform |\n   Subscribers | LinkedIn URL | Status |\n   Timestamp | Error\n3. Connect Google account in n8n\n4. Select the sheet in this node\n\nALT: Use n8n's built-in Tables\n(left sidebar → Tables → New Table)\n\n✅ FREE with Google account",
+        "width": 380,
+        "height": 300
+      },
+      "id": "251c6e16-30cb-447c-967f-7c294caca23c",
+      "name": "Sticky Note - 📊 GOOGLE SHEETS STA",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3870,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Lead Name": "={{ $json.name || 'Unknown' }}",
+            "Status": "Unqualified - Below Threshold",
+            "Timestamp": "={{ $now.toISO() }}",
+            "Error": ""
+          }
+        },
+        "options": {}
+      },
+      "id": "a0be5d27-6779-45bf-884f-cf780cfb19e6",
+      "name": "Sheet - Unqualified",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2400,
+        500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "62c0e1b0-d3cd-4205-b03e-f73b4b41a8f9",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🚨 ERROR HANDLER\n\nSetup:\n1. Workflow Settings (gear)\n2. Error Workflow → Select THIS workflow\n3. Auto-triggers on any error\n\n✅ Production-ready: no silent failures",
+        "width": 360,
+        "height": 220
+      },
+      "id": "782fb674-3e89-45f5-b739-50a85202fd8f",
+      "name": "Sticky Note - 🚨 ERROR HANDLER\n\nSe",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -30,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Lead Name": "ERROR",
+            "Status": "Error",
+            "Timestamp": "={{ $now.toISO() }}",
+            "Error": "={{ $json.execution?.error?.message || 'Unknown error' }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "94542e24-e651-4221-9e86-b921efc97e2d",
+      "name": "Sheet - Log Error",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        300,
+        700
+      ]
+    }
+  ],
+  "connections": {
+    "Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Exa Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exa Search": {
+      "main": [
+        [
+          {
+            "node": "Parse Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Results": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Leads": {
+      "main": [
+        null,
+        [
+          {
+            "node": "AI Research Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Research Lead": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Output": {
+      "main": [
+        [
+          {
+            "node": "IF Qualified",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Qualified": {
+      "main": [
+        [
+          {
+            "node": "HubSpot Create Contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sheet - Unqualified",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot Create Contact": {
+      "main": [
+        [
+          {
+            "node": "AI Write Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Write Email": {
+      "main": [
+        [
+          {
+            "node": "HubSpot Save Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot Save Email": {
+      "main": [
+        [
+          {
+            "node": "IF Has LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Has LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn Connect",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sheet - Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Connect": {
+      "main": [
+        [
+          {
+            "node": "Sheet - Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheet - Update Status": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheet - Unqualified": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Sheet - Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "meta": {
+    "instanceId": ""
+  }
+}

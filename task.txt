@@ -1,0 +1,67 @@
+================================================================================
+  TASK LIST - CrowdWisdomTrading n8n + AI Agent Intern Assessment
+  Extracted from: 02_2026 n8n Influencers outreach.docx
+================================================================================
+
+TECHNICALS / SETUP
+------------------
+[ ] Set up n8n environment
+[ ] Set up Postiz (open source) for social media
+[ ] Configure Exa Search and/or Tavily Search tools
+[ ] Set up LLM Provider via OpenRouter (free $1 trial / free models) or Gemini (free)
+[ ] Set up an image generation model
+[ ] Use n8n with MCP (as explained in reference video)
+
+WORKFLOW DEVELOPMENT
+--------------------
+
+1. Manual Trigger Form
+   [ ] Create a manual trigger with a form that accepts:
+       [ ] Lead type to search (e.g., trading influencers, 50K+ subscribers)
+       [ ] Social platform selection (YouTube, Instagram, TikTok, LinkedIn, Web Search)
+
+2. Lead Finding
+   [ ] Build lead search/discovery logic using Exa/Tavily search
+   [ ] Filter leads by criteria (trading influencers, 50K+ subscribers)
+
+3. CRM Integration
+   [ ] Set up HubSpot CRM OR ClickUp (free tier)
+   [ ] Save found leads into the chosen CRM
+
+4. AI-Powered Personalized Email
+   [ ] Create an AI agent node to generate personalized emails with:
+       [ ] Subject line - hook about CrowdWisdomTrading (www.crowdwisdomtrading.com)
+       [ ] CTA - ask for their help / feedback
+   [ ] Save the generated email to the CRM (HubSpot / ClickUp)
+
+5. LinkedIn Outreach
+   [ ] If lead has LinkedIn, send a LinkedIn connection request
+
+6. Status Tracking
+   [ ] Update lead status in an n8n table
+
+EXTRA POINTS (BONUS)
+--------------------
+[ ] Add logging throughout the workflow
+[ ] Add error handling for each step
+[ ] Make the workflow production-ready
+[ ] Add clear documentation to each node
+
+DELIVERABLES
+------------
+[ ] Export and save the n8n JSON workflow script
+[ ] Record a video walkthrough of the full workflow end-to-end
+[ ] Document a list of challenges faced and how they were solved
+
+SUBMISSION
+----------
+[ ] Upload to GitHub/GitLab repository (if available)
+[ ] Email deliverables to gilad@crowdwisdomtrading.com
+[ ] Complete within 5-7 days
+
+REFERENCE RESOURCES
+-------------------
+- https://www.youtube.com/watch?v=o56YJWAKSws
+- https://www.youtube.com/watch?v=dYYxL_91asY
+- https://www.youtube.com/watch?v=5H-GmJnVne
+- https://aimedia.notion.site/27d59bdfd61b80f38fc2dfa002faf28b?v=27d59bdfd61b81b884ac000c6e4ec421
